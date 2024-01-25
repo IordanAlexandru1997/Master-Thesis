@@ -282,7 +282,6 @@ public class OrientDBService implements DatabaseService {
                 resultSet.close();
             } else {
                 // Non-optimized method (existing approach)
-                // Use the picked custom ID to fetch the node
                 String nodeQuery = "SELECT FROM V WHERE id = ?";
                 OResultSet nodeResult = db.query(nodeQuery, randomSoBOId);
 
@@ -310,11 +309,6 @@ public class OrientDBService implements DatabaseService {
         logOperation("Read", details.toString());
 
     }
-
-
-
-
-
     private final List<String> updatedIds = new ArrayList<>();
 
     @Override
@@ -347,8 +341,6 @@ public class OrientDBService implements DatabaseService {
         }        logOperation("Update", "Updated SoBO with ID: " + id);
 
     }
-
-
     @Override
     public void delete() {
         List<String> soboIds = SoBOIdTracker.loadSoBOIds();
@@ -388,13 +380,10 @@ public class OrientDBService implements DatabaseService {
         }
         return null;
     }
-
-
     @Override
     public String getDatabaseName() {
         return "OrientDB";
     }
-
 
     @PreDestroy
     public void cleanup() {

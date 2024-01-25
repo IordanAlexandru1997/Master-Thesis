@@ -33,7 +33,6 @@ public class SoBOIdTracker {
             FileWriter writer = new FileWriter(FILE_NAME, false);
             writer.write(""); // Clearing the content
             writer.close();
-//            System.out.println("SoBO file cleared");
         } catch (IOException e) {
             System.err.println("Error clearing SoBO file: " + e.getMessage());
         }
@@ -42,15 +41,14 @@ public class SoBOIdTracker {
     public static void saveSoBOIds(List<String> soboIds) {
         try {
             objectMapper.writeValue(new File(FILE_NAME), soboIds);
-//            System.out.println("SoBO IDs saved to " + FILE_NAME);
         } catch (IOException e) {
             System.err.println("Error saving SoBO IDs to " + FILE_NAME + ": " + e.getMessage());
         }
     }
     public static void appendSoBOId(String soboId) {
         try {
-            List<String> existingIds = loadSoBOIds();  // Load existing IDs
-            existingIds.add(soboId);  // Add the new ID
+            List<String> existingIds = loadSoBOIds();
+            existingIds.add(soboId);
             saveSoBOIds(existingIds);
         } catch (Exception e) {
             System.err.println("Error appending SoBO ID to " + FILE_NAME + ": " + e.getMessage());

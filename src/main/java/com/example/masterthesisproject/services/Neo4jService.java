@@ -58,7 +58,6 @@ public class Neo4jService implements DatabaseService {
 
         try (Session session = driver.session()) {
             if (isOptimizationEffective()) {
-                // Create an index on the id property of the SoBO nodes for faster lookup if optimization is enabled.
                 String createIndexQuery = "CREATE INDEX sobo_id_index FOR (n:SoBO) ON (n.id)";
                 session.run(createIndexQuery);
             }
@@ -123,7 +122,7 @@ public class Neo4jService implements DatabaseService {
             int edgesCreated = 0;
 
             Set<SoBO> alreadyConnected = new HashSet<>();
-            alreadyConnected.add(sobo);  // Ensure we don't create an edge to the same node
+            alreadyConnected.add(sobo);
 
             List<SoBO> potentialConnections = new ArrayList<>(GENERATED_SoBOs);
             Collections.shuffle(potentialConnections);
@@ -190,7 +189,6 @@ public class Neo4jService implements DatabaseService {
             StringBuilder details = new StringBuilder("Selected SoBO with ID: " + randomSoBOId + "; Neighbors: ");
 
             if (isOptimizationEffective()) {
-                // Use Neo4j's API to retrieve a node using custom ID and its neighbors (both in and out)
                 String query = "MATCH (n {id: $id})-[:RELATED_TO]-(neighbor) RETURN neighbor.id AS neighborId";
                 Map<String, Object> parameters = Collections.singletonMap("id", randomSoBOId);
 
@@ -208,7 +206,6 @@ public class Neo4jService implements DatabaseService {
                 if (nodeResult.hasNext()) {
                     Node sobo = nodeResult.next().get("s").asNode();
 
-                    // Fetch the neighbors of the selected SoBO node considering all possible relationships (both in and out)
                     String neighborsQuery = "MATCH (s)-[r:RELATED_TO|FRIENDS_WITH|WORKS_WITH]-(neighbor) WHERE ID(s) = $id RETURN neighbor.id AS neighborId, type(r) as relationshipType";
                     Result neighborsResult = session.run(neighborsQuery, parameters("id", sobo.id()));
 

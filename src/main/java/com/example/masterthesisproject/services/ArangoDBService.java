@@ -87,7 +87,6 @@ public class ArangoDBService implements DatabaseService {
             }
         }
 
-        // Ensure sobo_graph exists
         ArangoGraph graph = database.graph("sobo_graph");
         if (!graph.exists()) {
             GraphCreateOptions graphOptions = new GraphCreateOptions();
@@ -113,7 +112,6 @@ public class ArangoDBService implements DatabaseService {
         }
 
         if (isOptimizationEffective()) {
-            // Create index on 'id' attribute
             soboCollection.ensureHashIndex(List.of("id"), new HashIndexOptions());
         }
     }
@@ -225,8 +223,6 @@ public class ArangoDBService implements DatabaseService {
             if (alreadyConnected.contains(targetSoBO)) {
                 continue;
             }
-
-
             Edge edge = SoBOGenerator.generateRandomEdge(sobo, targetSoBO);
             String edgeType = (String) edge.getProperties().get("edgeType");
 

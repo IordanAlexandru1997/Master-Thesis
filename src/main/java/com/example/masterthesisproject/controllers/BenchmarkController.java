@@ -46,20 +46,18 @@ public class BenchmarkController {
 
     @GetMapping("/logsPage")
     public String logsPage() {
-        return "logs"; // This will render the "logs.html" view
+        return "logs";
     }
 
 
     @GetMapping("/logs")
     public ResponseEntity<String> logs() {
-        // Use FileSystemResource to read the template_timings.json content from the root directory
         Resource resource = new FileSystemResource("template_timings.json");
         String content = ""; // Initialize as empty
         try {
             byte[] bytes = FileCopyUtils.copyToByteArray(resource.getInputStream());
             String rawContent = new String(bytes, StandardCharsets.UTF_8);
 
-            // Convert the raw content to a list of maps
             ObjectMapper objectMapper = new ObjectMapper();
             List<Map<String, Object>> logsList = Arrays.stream(rawContent.split("\\r?\\n"))
                     .filter(line -> !line.isEmpty())
@@ -71,13 +69,8 @@ public class BenchmarkController {
                         }
                     })
                     .collect(Collectors.<Map<String, Object>>toList());
-
-
-            // Convert the list back to a formatted JSON string
             content = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(logsList);
 
-            // Optional: Write the formatted content back to the file
-            // Files.write(Paths.get("template_timings.json"), content.getBytes(StandardCharsets.UTF_8));
 
         } catch (IOException e) {
             e.printStackTrace();
